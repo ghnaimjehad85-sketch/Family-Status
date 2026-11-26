@@ -390,5 +390,76 @@
     </script>
     <script type="module" src="community-room.js"></script>
     <script type="module" src="thanks.js"></script>
+    <style>
+  body {
+    padding-bottom: 90px;
+  }
+
+  #bottomAdBanner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: #1e293b;
+    color: #f8fafc;
+    border-top: 1px solid #475569;
+    padding: 10px 40px 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 58px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.35);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
+  }
+
+  #bottomAdBanner.hidden {
+    display: none;
+  }
+
+  #closeBottomAdBtn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid #64748b;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-slot-content {
+    width: 100%;
+    max-width: 728px;
+    text-align: center;
+  }
+</style>
+
+<div id="bottomAdBanner" role="region" aria-label="إعلان">
+  <button type="button" id="closeBottomAdBtn" aria-label="إخفاء الإعلان">×</button>
+
+  <div class="ad-slot-content" id="adSlotContent">
+    <span>مساحة إعلانية سفلية</span>
+  </div>
+</div>
+
+<script>
+  const bottomAdBanner = document.getElementById("bottomAdBanner");
+  const closeBottomAdBtn = document.getElementById("closeBottomAdBtn");
+
+  if (closeBottomAdBtn && bottomAdBanner) {
+    closeBottomAdBtn.addEventListener("click", () => {
+      bottomAdBanner.classList.add("hidden");
+    });
+  }
+</script>
 </body>
 </html>
