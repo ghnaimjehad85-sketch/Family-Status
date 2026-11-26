@@ -1,87 +1,115 @@
 import { auth } from "./firebase.js";
 
 import {
-    setPersistence,
-    browserLocalPersistence,
     signInWithEmailAndPassword,
-    onAuthStateChanged
+    sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
 
 const loginForm = document.getElementById("loginForm");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginButton = document.getElementById("loginButton");
+const emailInput = document.getElementById("loginEmail");
+const passwordInput = document.getElementById("loginPassword");
+const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
 const loginMessage = document.getElementById("loginMessage");
 
-let isSubmittingLogin = false;
+function setMessage(text, isError = false) {
+    if (!loginMessage) return;
+    loginMessage.textContent = text;
+    loginMessage.style.color = isError ? "#f87171" : "#fed7aa";
+}
 
-onAuthStateChanged(auth, (user) => {
-    if (user && !isSubmittingLogin) {
-        window.location.replace("my-communities.html");
-    }
-});
-
-function getFriendlyAuthError(errorCode) {
-    switch (errorCode) {
-        case "auth/invalid-credential":
+function getResetErrorMessage(code) {
+    switch (code) {
         case "auth/user-not-found":
-        case "auth/wrong-password":
-            return "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+            return "لا يوجد حساب مسجل بهذا البريد الإلكتروني.";
         case "auth/invalid-email":
             return "صيغة البريد الإلكتروني غير صحيحة.";
         case "auth/too-many-requests":
-            return "تمت محاولات كثيرة، انتظر قليلاً ثم أعد المحاولة.";
-        case "auth/network-request-failed":
-            return "تحقق من اتصال الإنترنت ثم أعد المحاولة.";
+            return "تم إرسال طلبات كثيرة، انتظر قليلاً ثم أعد المحاولة.";
         default:
-            return "تعذر تسجيل الدخول، تأكد من البيانات وحاول مرة أخرى.";
+            return "تعذر إرسال رسالة إعادة تعيين كلمة السر، تحقق من إعدادات Firebase أو الاتصال بالإنترنت.";
     }
 }
 
+// تسجيل الدخول بالبريد وكلمة السر
 if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
         const email = (emailInput?.value || "").trim();
         const password = passwordInput?.value || "";
 
         if (!email || !password) {
-            if (loginMessage) {
-                loginMessage.textContent = "يرجى إدخال البريد الإلكتروني وكلمة المرور.";
-            }
+            setMessage("يرجى إدخال البريد الإلكتروني وكلمة السر.", true);
             return;
         }
 
-        isSubmittingLogin = true;
-
-        if (loginButton) {
-            loginButton.disabled = true;
-            loginButton.textContent = "جارٍ الدخول...";
+        if (loginSubmitBtn) {
+            loginSubmitBtn.disabled = true;
+            loginSubmitBtn.textContent = "جارٍ تسجيل الدخول...";
         }
-
-        if (loginMessage) {
-            loginMessage.textContent = "";
+        if (forgotPasswordBtn) {
+            forgotPasswordBtn.disabled = true;
         }
+        setMessage("");
 
         try {
-            await setPersistence(auth, browserLocalPersistence);
             await signInWithEmailAndPassword(auth, email, password);
-
-            if (loginMessage) {
-                loginMessage.textContent = "تم تسجيل الدخول بنجاح، جارٍ التحويل...";
-            }
-
-            window.location.replace("my-communities.html");
+            window.location.href = "index.html";
         } catch (error) {
             console.error("Login error:", error);
-            if (loginMessage) {
-                loginMessage.textContent = getFriendlyAuthError(error?.code);
+            if (
+                error?.code === "auth/invalid-credential" ||
+                error?.code === "auth/wrong-password" ||
+                error?.code === "auth/user-not-found"
+            ) {
+                setMessage("البريد الإلكتروني أو كلمة السر غير صحيحة.", true);
+            } else if (error?.code === "auth/invalid-email") {
+                setMessage("صيغة البريد الإلكتروني غير صحيحة.", true);
+            } else {
+                setMessage("تعذر تسجيل الدخول، تحقق من البيانات أو الاتصال بالإنترنت.", true);
             }
-            isSubmittingLogin = false;
+        } finally {
+            if (loginSubmitBtn) {
+                loginSubmitBtn.disabled = false;
+                loginSubmitBtn.textContent = "تسجيل الدخول";
+            }
+            if (forgotPasswordBtn) {
+                forgotPasswordBtn.disabled = false;
+            }
+        }
+    });
+}
 
-            if (loginButton) {
-                loginButton.disabled = false;
-                loginButton.textContent = "دخول";
+// إرسال رسالة إعادة تعيين كلمة السر للبريد المكتوب في خانة البريد
+if (forgotPasswordBtn) {
+    forgotPasswordBtn.addEventListener("click", async () => {
+        const email = (emailInput?.value || "").trim();
+
+        if (!email) {
+            setMessage("اكتب البريد الإلكتروني المرتبط بحسابك أولاً ثم اضغط نسيت كلمة السر.", true);
+            emailInput?.focus();
+            return;
+        }
+
+        forgotPasswordBtn.disabled = true;
+        if (loginSubmitBtn) {
+            loginSubmitBtn.disabled = true;
+        }
+        setMessage("جارٍ إرسال رسالة إعادة تعيين كلمة السر...");
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            setMessage(
+                `تم إرسال رسالة إعادة تعيين كلمة السر إلى ${email}. تفقد صندوق الوارد أو مجلد الرسائل غير المرغوب فيها (Spam).`
+            );
+        } catch (error) {
+            console.error("Reset password error:", error);
+            setMessage(getResetErrorMessage(error?.code), true);
+        } finally {
+            forgotPasswordBtn.disabled = false;
+            if (loginSubmitBtn) {
+                loginSubmitBtn.disabled = false;
             }
         }
     });

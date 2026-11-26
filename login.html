@@ -1,45 +1,99 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول | FamilyStatus</title>
-    <link rel="stylesheet" href="auth.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول - FamilyStatus</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+    }
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    }
+    h1 {
+      margin: 0 0 18px;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 0.95rem;
+    }
+    button {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    #loginSubmitBtn {
+      background: #ea580c;
+      color: #fff;
+    }
+    #forgotPasswordBtn {
+      background: transparent;
+      color: #fdba74;
+      border: 1px solid #475569;
+    }
+    #loginMessage {
+      min-height: 20px;
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
-    <main class="auth-wrapper">
-        <section class="auth-card">
-            <div class="auth-brand">
-                <span>🌅</span>
-                <span>FamilyStatus</span>
-            </div>
-            <p class="auth-subtitle">أهلاً بعودتك، سجل دخولك لمتابعة مجتمعاتك</p>
+  <div class="card">
+    <h1>تسجيل الدخول</h1>
 
-            <form id="loginForm">
-                <div class="input-group">
-                    <label for="email">البريد الإلكتروني</label>
-                    <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email" required>
-                </div>
+    <form id="loginForm">
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="البريد الإلكتروني المرتبط بالحساب"
+        autocomplete="email"
+        required
+      />
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="كلمة السر"
+        autocomplete="current-password"
+        required
+      />
 
-                <div class="input-group">
-                    <label for="password">كلمة المرور</label>
-                    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
-                </div>
+      <button type="submit" id="loginSubmitBtn">تسجيل الدخول</button>
+      <button type="button" id="forgotPasswordBtn">نسيت كلمة السر؟</button>
 
-                <button type="submit" class="btn-primary" id="loginButton">
-                    دخول
-                </button>
-            </form>
+      <p id="loginMessage" role="status" aria-live="polite"></p>
+    </form>
+  </div>
 
-            <p id="loginMessage" class="auth-message"></p>
-
-            <div class="auth-footer">
-                ليس لديك حساب؟ <a href="signup.html">إنشاء حساب جديد</a>
-            </div>
-        </section>
-    </main>
-
-    <script type="module" src="login.js"></script>
-    <script type="module" src="thanks.js"></script>
+  <script type="module" src="./login.js"></script>
 </body>
 </html>
