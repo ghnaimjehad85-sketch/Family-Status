@@ -1,149 +1,140 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>المجتمع - Family Status</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      padding: 0 0 80px 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f9fafb;
-      color: #111827;
-    }
-    .bottom-ad-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      min-height: 58px;
-      background: #ffffff;
-      border-top: 1px solid #e5e7eb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 38px 6px 10px;
-      z-index: 9999;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-    }
-    .ad-slot-content {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .close-ad-btn {
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      width: 24px;
-      height: 24px;
-      border: none;
-      border-radius: 50%;
-      background: #f3f4f6;
-      color: #111827;
-      font-size: 16px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .close-ad-btn:hover {
-      background: #e5e7eb;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتمعات العائلة | FamilyStatus</title>
+    <link rel="stylesheet" href="auth.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: #120b0e;
+            color: #fff5f7;
+        }
+
+        .community-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 850px;
+            margin: 30px auto;
+        }
+
+        .community-option {
+            padding: 28px;
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            border-radius: 22px;
+            background: #1e1217;
+            text-align: center;
+        }
+
+        .community-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .community-option h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .community-option p {
+            color: #b89ea8;
+            line-height: 1.8;
+            margin-bottom: 22px;
+        }
+
+        .community-option button {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        @media(max-width: 650px) {
+            .community-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <!-- ضع هنا عناصر واجهة الغرفة فقط (العنوان، الرسائل، حقل الإدخال، لوحة الإضافة، ونافذة QR) -->
-  <main id="roomApp">
-    <h1 id="communityName">المجتمع</h1>
-    <p id="communityDescription"></p>
-    <div id="chatMessages"></div>
-    <input id="chatInput" type="text" />
-    <button id="addPeopleButton" type="button"></button>
-    <form id="userSearchForm">
-      <input id="usernameSearch" type="text" />
-    </form>
-    <div id="userSearchResults"></div>
-    <div id="qrModal" style="display:none;">
-      <div id="communityQrCanvas"></div>
-      <button id="closeQrModal" type="button"></button>
-    </div>
-    <button id="showQrBtn" type="button"></button>
-  </main>
 
-  <!-- حاوية الشريط السفلي الثابت القابل للإخفاء -->
-  <div class="bottom-ad-bar" id="bottomAdBar" role="region" aria-label="مساحة إعلانية">
-    <button type="button" class="close-ad-btn" id="closeAdBtn" aria-label="إخفاء الإعلان">&times;</button>
-    <div class="ad-slot-content" id="adSlotContent">
-      <!-- الصق هنا كود الإعلان النظيف عند توفره -->
-    </div>
-  </div>
+    <div class="auth-glow glow-one"></div>
+    <div class="auth-glow glow-two"></div>
 
-  <!-- كود الجافاسكريبت الصحيح داخل وسم module وليس نصاً عادياً -->
-  <script type="module">
-    import { auth, db } from "./firebase.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <main class="auth-page">
 
-    const roomId = new URLSearchParams(window.location.search).get("id");
-    const communityNameEl = document.getElementById("communityName");
-    const communityDescriptionEl = document.getElementById("communityDescription");
-    const chatMessagesEl = document.getElementById("chatMessages");
-    const chatInput = document.getElementById("chatInput");
-    const statusButtons = document.querySelectorAll(".status-btn");
-    const addPeopleButton = document.getElementById("addPeopleButton");
-    const userSearchForm = document.getElementById("userSearchForm");
-    const usernameSearch = document.getElementById("usernameSearch");
-    const userSearchResults = document.getElementById("userSearchResults");
-    const qrModal = document.getElementById("qrModal");
-    const communityQrCanvas = document.getElementById("communityQrCanvas");
-    const showQrBtn = document.getElementById("showQrBtn");
-    const closeQrModal = document.getElementById("closeQrModal");
+        <section class="auth-card" style="max-width:850px;width:90%;">
 
-    let communityData = null;
-    let statusMap = {};
-    let lastNotifId = null;
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+                <span>FamilyStatus</span>
+            </div>
 
-    function isVerifiedUser(profile) {
-      return Boolean(profile?.isVerified);
-    }
+            <h1>مرحباً بك في عائلتك ❤️</h1>
 
-    function getMemberLabel(profile) {
-      const full = `${profile?.firstName || ""} ${profile?.lastName || ""}`.trim();
-      return full || profile?.username || "عضو";
-    }
+            <p class="subtitle">
+                ابدأ رحلتك بإنشاء مجتمع عائلتك أو الانضمام إلى مجتمع موجود.
+            </p>
 
-    function showRoomToast(text) {
-      let toast = document.getElementById("roomToastBanner");
-      if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "roomToastBanner";
-        document.body.appendChild(toast);
-      }
-      toast.textContent = text;
-      toast.style.cssText =
-        "position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#24141b;color:#fff5f7;border:1px solid #4a2c38;padding:10px 16px;border-radius:10px;font-weight:600;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,0.25);";
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    }
+            <div class="community-options">
 
-    // زر إخفاء الشريط السفلي
-    const adBar = document.getElementById("bottomAdBar");
-    const closeBtn = document.getElementById("closeAdBtn");
-    if (closeBtn && adBar) {
-      closeBtn.addEventListener("click", function () {
-        adBar.style.display = "none";
-      });
-    }
-  </script>
-  <script src="verification-admin.js"></script>
+                <div class="community-option">
+
+                    <div class="community-icon">🏠</div>
+
+                    <h2>إنشاء مجتمع</h2>
+
+                    <p>
+                        أنشئ مساحة خاصة لعائلتك،
+                        وادعُ أفرادها للانضمام إليك.
+                    </p>
+
+                    <button type="button" id="createCommunity">
+                        إنشاء مجتمع جديد
+                    </button>
+
+                </div>
+
+                <div class="community-option">
+
+                    <div class="community-icon">🌅</div>
+
+                    <h2>الانضمام لمجتمع</h2>
+
+                    <p>
+                        لديك رمز دعوة من أحد أفراد عائلتك؟
+                        انضم إلى مجتمعهم الآن.
+                    </p>
+
+                    <button type="button" id="joinCommunity">
+                        الانضمام إلى مجتمع
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="footer-note">
+            <span>✦</span>
+            مكان يجمع العائلة
+        </div>
+
+    </main>
+
+    <script type="module" src="community.js"></script>
+    <script type="module" src="thanks.js"></script>
 </body>
 </html>
