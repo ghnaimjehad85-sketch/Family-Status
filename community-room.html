@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غرفة المجتمع | FamilyStatus</title>
+    <link rel="stylesheet" href="auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body {
+            display: block;
+            padding: 0;
+        }
+
+        .room-wrap {
+            width: 92%;
+            max-width: 780px;
+            margin: auto;
+            padding: 20px 0 80px;
+        }
+
+        .room-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .top-pill-btn {
+            padding: 10px 13px;
+            border-radius: 13px;
+            border: 1px solid rgba(249, 115, 22, 0.32);
+            background: #1e1217;
+            color: #fff5f7;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .room-title-box {
+            text-align: center;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .room-title-box h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #fed7aa;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .room-title-box p {
+            margin: 3px 0 0;
+            font-size: 12px;
+            color: #b89ea8;
+        }
+
+        .card-box {
+            background: rgba(30, 18, 23, 0.9);
+            border: 1px solid rgba(249, 115, 22, 0.24);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .section-head h2 {
+            margin: 0;
+            font-size: 15px;
+            color: #fbcfe8;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .status-option {
+            padding: 12px 8px;
+            border-radius: 13px;
+            border: 1px solid rgba(249, 115, 22, 0.22);
+            background: #140b0f;
+            color: #fff5f7;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.18s;
+        }
+
+        .status-option.selected {
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            border-color: transparent;
+            color: #fff;
+            transform: scale(1.02);
+        }
+
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .member-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 15px;
+            border-radius: 15px;
+            background: #140b0f;
+            border: 1px solid rgba(249, 115, 22, 0.16);
+        }
+
+        .member-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff5f7;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1d9bf0;
+            color: #fff;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+
+        .member-status-pill {
+            padding: 6px 13px;
+            border-radius: 999px;
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.35);
+            color: #fed7aa;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tools-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .small-action-btn {
+            padding: 10px 13px;
+            border-radius: 12px;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            background: #26161d;
+            color: #fff5f7;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .collapsible-panel {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(249, 115, 22, 0.2);
+        }
+
+        .search-row,
+        .chat-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .search-row input,
+        .chat-form input {
+            flex: 1;
+            padding: 11px 13px;
+            border-radius: 12px;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            background: #140b0f;
+            color: #fff;
+            font-family: inherit;
+        }
+
+        .add-user-button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .user-result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 12px;
+            background: #140b0f;
+        }
+
+        .chat-box {
+            max-height: 230px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 14px;
+            background: #140b0f;
+        }
+
+        .chat-msg {
+            padding: 9px 12px;
+            border-radius: 12px;
+            background: #24141b;
+            font-size: 13px;
+        }
+
+        .chat-msg-header {
+            font-weight: 700;
+            color: #fed7aa;
+            margin-bottom: 4px;
+        }
+
+        .qr-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 5, 8, 0.85);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .qr-card {
+            background: #1e1217;
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 22px;
+            padding: 22px;
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        #communityQrCanvas {
+            display: flex;
+            justify-content: center;
+            margin: 14px auto;
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+            width: fit-content;
+        }
+
+        @media (max-width: 500px) {
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="room-wrap">
+        <header class="room-top">
+            <a href="my-communities.html" class="top-pill-btn">← رجوع</a>
+
+            <div class="room-title-box">
+                <h1 id="communityName">المجتمع</h1>
+                <p id="communityDescription">جارٍ التحميل...</p>
+            </div>
+
+            <div style="display:flex; gap:6px;">
+                <button type="button" class="top-pill-btn" id="toggleChatBtn" title="رسائل المجتمع">💬</button>
+                <button type="button" class="top-pill-btn" id="toggleToolsBtn" title="أدوات المجتمع">⚙️</button>
+            </div>
+        </header>
+
+        <!-- 1. حالتي الآن -->
+        <section class="card-box">
+            <div class="section-head">
+                <h2>حالتي الآن</h2>
+            </div>
+            <div class="status-grid">
+                <button type="button" class="status-option" data-status="متاح">🟢 متاح</button>
+                <button type="button" class="status-option" data-status="مشغول">🔴 مشغول</button>
+                <button type="button" class="status-option" data-status="نائم">🌙 نائم</button>
+                <button type="button" class="status-option" data-status="في اجتماع">💼 في اجتماع</button>
+                <button type="button" class="status-option" data-status="في الطريق">🚗 في الطريق</button>
+                <button type="button" class="status-option" data-status="في حصة">📚 في حصة</button>
+            </div>
+        </section>
+
+        <!-- 2. حالة الأهل في ثانية واحدة -->
+        <section class="card-box">
+            <div class="section-head">
+                <h2>حالة الأهل</h2>
+            </div>
+            <div id="membersStatusList" class="members-list"></div>
+        </section>
+
+        <!-- 3. رسائل المجتمع (مطوية افتراضياً وتفتح بزر 💬) -->
+        <section class="card-box" id="chatSection" style="display:none;">
+            <div class="section-head">
+                <h2>رسائل المجتمع</h2>
+            </div>
+            <div id="chatMessages" class="chat-box"></div>
+            <p id="unverifiedChatNotice" style="display:none; font-size:12px; color:#b89ea8; margin:8px 0 0;">
+                إرسال الرسائل الكتابية متاح للحسابات الموثقة بالصح الأزرق.
+            </p>
+            <form id="chatForm" class="chat-form" style="display:none;">
+                <input type="text" id="chatInput" placeholder="اكتب رسالة للمجتمع..." required>
+                <button type="submit" class="add-user-button">إرسال</button>
+            </form>
+        </section>
+
+        <!-- 4. أدوات المجتمع (مطوية افتراضياً وتفتح بزر ⚙️) -->
+        <section class="card-box" id="toolsSection" style="display:none;">
+            <div class="section-head">
+                <h2>إدارة وإضافة</h2>
+            </div>
+            <div class="tools-bar">
+                <button type="button" class="small-action-btn" id="addPeopleButton">+ إضافة أشخاص إلى المجتمع</button>
+                <button type="button" class="small-action-btn" id="showQrBtn">📷 باركود QR</button>
+            </div>
+
+            <div class="collapsible-panel" id="addPeoplePanel">
+                <form id="userSearchForm" class="search-row">
+                    <input type="text" id="usernameSearch" placeholder="ابحث باسم المستخدم (اليوزر)" required>
+                    <button type="submit" class="add-user-button">بحث</button>
+                </form>
+                <p id="userSearchMessage" style="font-size:13px; color:#fb923c; margin:8px 0 0;"></p>
+                <div id="userSearchResults"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- نافذة باركود QR -->
+    <div class="qr-modal" id="qrModal">
+        <div class="qr-card">
+            <h3 style="margin:0; color:#fed7aa;">باركود الانضمام للمجتمع</h3>
+            <div id="communityQrCanvas"></div>
+            <button type="button" class="small-action-btn" id="closeQrModal" style="width:100%;">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        const toggleToolsBtn = document.getElementById("toggleToolsBtn");
+        const toolsSection = document.getElementById("toolsSection");
+        if (toggleToolsBtn && toolsSection) {
+            toggleToolsBtn.addEventListener("click", () => {
+                const isHidden = getComputedStyle(toolsSection).display === "none";
+                toolsSection.style.display = isHidden ? "block" : "none";
+            });
+        }
+
+        const toggleChatBtn = document.getElementById("toggleChatBtn");
+        const chatSection = document.getElementById("chatSection");
+        if (toggleChatBtn && chatSection) {
+            toggleChatBtn.addEventListener("click", () => {
+                const isHidden = getComputedStyle(chatSection).display === "none";
+                chatSection.style.display = isHidden ? "block" : "none";
+            });
+        }
+    </script>
+    <script type="module" src="community-room.js"></script>
+    <script type="module" src="thanks.js"></script>
+</body>
+</html>

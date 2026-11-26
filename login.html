@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | FamilyStatus</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <main class="auth-wrapper">
+        <section class="auth-card">
+            <div class="auth-brand">
+                <span>🌅</span>
+                <span>FamilyStatus</span>
+            </div>
+            <p class="auth-subtitle">أهلاً بعودتك، سجل دخولك لمتابعة مجتمعاتك</p>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="example@gmail.com" autocomplete="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginButton">
+                    دخول
+                </button>
+            </form>
+
+            <p id="loginMessage" class="auth-message"></p>
+
+            <div class="auth-footer">
+                ليس لديك حساب؟ <a href="signup.html">إنشاء حساب جديد</a>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="login.js"></script>
+    <script type="module" src="thanks.js"></script>
+</body>
+</html>

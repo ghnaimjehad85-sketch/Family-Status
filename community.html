@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتمعات العائلة | FamilyStatus</title>
+    <link rel="stylesheet" href="auth.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: #120b0e;
+            color: #fff5f7;
+        }
+
+        .community-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 850px;
+            margin: 30px auto;
+        }
+
+        .community-option {
+            padding: 28px;
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            border-radius: 22px;
+            background: #1e1217;
+            text-align: center;
+        }
+
+        .community-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .community-option h2 {
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .community-option p {
+            color: #b89ea8;
+            line-height: 1.8;
+            margin-bottom: 22px;
+        }
+
+        .community-option button {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        @media(max-width: 650px) {
+            .community-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-glow glow-one"></div>
+    <div class="auth-glow glow-two"></div>
+
+    <main class="auth-page">
+
+        <section class="auth-card" style="max-width:850px;width:90%;">
+
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+                <span>FamilyStatus</span>
+            </div>
+
+            <h1>مرحباً بك في عائلتك ❤️</h1>
+
+            <p class="subtitle">
+                ابدأ رحلتك بإنشاء مجتمع عائلتك أو الانضمام إلى مجتمع موجود.
+            </p>
+
+            <div class="community-options">
+
+                <div class="community-option">
+
+                    <div class="community-icon">🏠</div>
+
+                    <h2>إنشاء مجتمع</h2>
+
+                    <p>
+                        أنشئ مساحة خاصة لعائلتك،
+                        وادعُ أفرادها للانضمام إليك.
+                    </p>
+
+                    <button type="button" id="createCommunity">
+                        إنشاء مجتمع جديد
+                    </button>
+
+                </div>
+
+                <div class="community-option">
+
+                    <div class="community-icon">🌅</div>
+
+                    <h2>الانضمام لمجتمع</h2>
+
+                    <p>
+                        لديك رمز دعوة من أحد أفراد عائلتك؟
+                        انضم إلى مجتمعهم الآن.
+                    </p>
+
+                    <button type="button" id="joinCommunity">
+                        الانضمام إلى مجتمع
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="footer-note">
+            <span>✦</span>
+            مكان يجمع العائلة
+        </div>
+
+    </main>
+
+    <script type="module" src="community.js"></script>
+    <script type="module" src="thanks.js"></script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتمعاتي | FamilyStatus</title>
+    <link rel="stylesheet" href="auth.css">
+
+    <!-- مكتبات مسح QR من الكاميرا ومن الصور -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #120b0e;
+            color: #fff5f7;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .home-container {
+            width: 92%;
+            max-width: 850px;
+            margin: auto;
+            padding: 25px 0 110px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fb923c;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1d9bf0;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-top-button {
+            position: relative;
+            width: 45px;
+            height: 45px;
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 14px;
+            background: #1e1217;
+            color: #fff5f7;
+            font-size: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 999px;
+            background: #ec4899;
+            color: #fff;
+            font-size: 11px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .menu-button {
+            width: 45px;
+            height: 45px;
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 14px;
+            background: #1e1217;
+            color: #fff5f7;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .page-heading h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #b89ea8;
+            margin-bottom: 25px;
+        }
+
+        .community-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .community-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px;
+            border: 1px solid rgba(249, 115, 22, 0.24);
+            border-radius: 18px;
+            background: #1e1217;
+            transition: .2s;
+        }
+
+        .community-card:hover {
+            border-color: #ec4899;
+            transform: translateY(-2px);
+        }
+
+        .community-avatar {
+            width: 58px;
+            height: 58px;
+            flex-shrink: 0;
+            border-radius: 17px;
+            background: rgba(249, 115, 22, 0.16);
+            border: 1px solid rgba(236, 72, 153, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+        }
+
+        .community-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .community-info h3 {
+            margin: 0 0 7px;
+            font-size: 17px;
+        }
+
+        .community-info p {
+            color: #b89ea8;
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .open-community {
+            padding: 11px 15px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .leave-community-btn {
+            padding: 11px 13px;
+            border: 1px solid rgba(239, 68, 68, 0.42);
+            border-radius: 11px;
+            background: rgba(127, 29, 29, 0.24);
+            color: #fca5a5;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .reject-request-btn {
+            padding: 11px 13px;
+            border: 1px solid rgba(239, 68, 68, 0.42);
+            border-radius: 11px;
+            background: rgba(127, 29, 29, 0.24);
+            color: #fca5a5;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #fed7aa;
+            margin: 22px 0 12px;
+        }
+
+        .page-message {
+            text-align: center;
+            color: #fb923c;
+            line-height: 1.8;
+            margin-top: 25px;
+        }
+
+        .add-button {
+            position: fixed;
+            left: 25px;
+            bottom: 25px;
+            width: 55px;
+            height: 55px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(249, 115, 22, 0.35);
+            z-index: 20;
+        }
+
+        .add-menu {
+            position: fixed;
+            left: 25px;
+            bottom: 90px;
+            width: 230px;
+            padding: 12px;
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 17px;
+            background: #1e1217;
+            display: none;
+            z-index: 20;
+        }
+
+        .add-menu button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin: 5px 0;
+            border: 1px solid rgba(249, 115, 22, 0.22);
+            border-radius: 12px;
+            background: #2b1821;
+            color: white;
+            cursor: pointer;
+            text-align: right;
+            font-family: inherit;
+        }
+
+        .settings-page {
+            position: fixed;
+            inset: 0;
+            background: #120b0e;
+            z-index: 50;
+            overflow-y: auto;
+            display: none;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+
+        .settings-inner {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .settings-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .settings-top h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .back-button {
+            padding: 10px 16px;
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 12px;
+            background: #1e1217;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .settings-item {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(249, 115, 22, 0.22);
+            border-radius: 16px;
+            background: #1e1217;
+            color: white;
+            text-align: right;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .settings-item small {
+            display: block;
+            color: #b89ea8;
+            margin-top: 7px;
+            font-size: 13px;
+        }
+
+        .settings-item.selected {
+            border-color: #f472b6;
+            background: #2e1923;
+        }
+
+        .settings-item.danger {
+            border-color: rgba(239, 68, 68, 0.45);
+            background: rgba(127, 29, 29, 0.22);
+        }
+
+        .form-card {
+            background: #1e1217;
+            border: 1px solid rgba(249, 115, 22, 0.28);
+            border-radius: 18px;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #fed7aa;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(249, 115, 22, 0.32);
+            background: #140b0f;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            font-family: inherit;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid rgba(249, 115, 22, 0.38);
+            border-radius: 13px;
+            background: #2b1821;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .danger-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 13px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 12px;
+            font-family: inherit;
+        }
+
+        #qrReader {
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #140b0f;
+            margin-bottom: 14px;
+        }
+
+        @media(max-width:600px) {
+            .community-card {
+                flex-wrap: wrap;
+            }
+
+            .card-actions {
+                width: 100%;
+            }
+
+            .open-community,
+            .leave-community-btn {
+                flex: 1;
+            }
+
+            .home-container {
+                padding-top: 20px;
+            }
+
+            .add-button {
+                left: 18px;
+                bottom: 18px;
+            }
+
+            .add-menu {
+                left: 18px;
+                bottom: 82px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="home-container" id="homePage">
+
+        <header class="top-bar">
+            <div class="brand">
+                <span>✦</span>
+                <span>FamilyStatus</span>
+                <span id="headerVerifiedBadge" class="verified-badge" style="display:none;" title="حساب موثق">✓</span>
+            </div>
+
+            <div class="top-actions">
+                <button class="icon-top-button" id="notificationsButton" title="مركز الإشعارات">
+                    🔔
+                    <span class="notif-badge" id="notifBadge">0</span>
+                </button>
+                <button class="menu-button" id="settingsButton" title="الإعدادات">
+                    ⋮
+                </button>
+            </div>
+        </header>
+
+        <section class="page-heading">
+            <h1>مجتمعاتي 🌅</h1>
+            <p id="userGreeting">مجتمعاتك في مكان واحد</p>
+        </section>
+
+        <div id="communityList" class="community-list"></div>
+
+        <p id="pageMessage" class="page-message">
+            جارٍ تحميل مجتمعاتك...
+        </p>
+
+    </main>
+
+    <!-- زر إنشاء المجتمع / QR -->
+    <button class="add-button" id="addCommunityButton" title="إضافة مجتمع">
+        +
+    </button>
+
+    <div class="add-menu" id="addCommunityOptions">
+        <button id="createNewCommunity">
+            🏠 إنشاء مجتمع
+        </button>
+
+        <button id="joinByQR">
+            📷 الانضمام عبر QR
+        </button>
+    </div>
+
+    <!-- مركز الإشعارات -->
+    <section class="settings-page" id="notificationsPage" style="z-index:55;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>مركز الإشعارات 🔔</h1>
+                <button class="back-button" id="backNotificationsButton">← رجوع</button>
+            </header>
+
+            <h2 class="section-title">طلبات الانضمام للمجتمعات</h2>
+            <div id="joinRequestsList" class="community-list"></div>
+            <p id="joinRequestsEmpty" class="page-message" style="margin-top:10px;"></p>
+
+            <h2 class="section-title">إشعارات الحالات</h2>
+            <div id="statusNotificationsList" class="community-list"></div>
+            <p id="statusNotificationsEmpty" class="page-message" style="margin-top:10px;"></p>
+        </div>
+    </section>
+
+    <!-- 1. صفحة الإعدادات الرئيسية -->
+    <section class="settings-page" id="settingsPage">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>إعدادات الحساب</h1>
+                <button class="back-button" id="backHomeButton">← رجوع</button>
+            </header>
+
+            <button class="settings-item" id="accountPrivacyButton">
+                🔒 خصوصية الحساب
+                <small>حساب خاص أو عام</small>
+            </button>
+
+            <button class="settings-item" id="editAccountButton">
+                ✏️ تعديل الحساب
+                <small>الاسم واليوزر والعمر والإيميل</small>
+            </button>
+
+            <button class="settings-item" id="verificationButton">
+                🔵 توثيق الحساب
+                <small>إرسال طلب التوثيق وتفعيل الصح الأزرق وإرسال الرسائل في المجتمع</small>
+            </button>
+
+            <button class="settings-item" id="qrSettingsButton">
+                📷 الانضمام إلى مجتمع عبر QR
+                <small>تصوير رمز أو رفع صورة</small>
+            </button>
+
+            <button class="settings-item" id="adminVerifyButton" style="display:none; border-color:#1d9bf0;">
+                🛡️ إدارة طلبات التوثيق (خاص بالمدير)
+                <small>مراجعة الطلبات وتفعيل الصح الأزرق للأعضاء</small>
+            </button>
+
+            <button class="settings-item danger" id="deleteAccountButton">
+                🗑️ حذف الحساب
+                <small>حذف حسابك وبياناتك نهائياً</small>
+            </button>
+
+            <button class="settings-item" id="logoutButton">
+                🚪 تسجيل الخروج
+                <small>إنهاء الجلسة الحالية والعودة لتسجيل الدخول</small>
+            </button>
+        </div>
+    </section>
+
+    <!-- 2. صفحة خصوصية الحساب -->
+    <section class="settings-page" id="privacyPage" style="z-index:60;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>خصوصية الحساب</h1>
+                <button class="back-button" id="backPrivacyButton">← رجوع</button>
+            </header>
+
+            <button class="settings-item" id="publicAccountOption">
+                🌍 حساب عام
+                <small>يمكن إضافتك أو إرسال دعوات لك بسهولة</small>
+            </button>
+
+            <button class="settings-item" id="privateAccountOption">
+                🔒 حساب خاص
+                <small>لا يمكن انضمامك لأي مجتمع إلا بإذنك من مركز الإشعارات</small>
+            </button>
+
+            <p id="privacyStatus" class="page-message"></p>
+        </div>
+    </section>
+
+    <!-- 3. صفحة تعديل الحساب -->
+    <section class="settings-page" id="editAccountPage" style="z-index:60;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>تعديل الحساب</h1>
+                <button class="back-button" id="backEditButton">← رجوع</button>
+            </header>
+
+            <form class="form-card" id="editAccountForm">
+                <div class="form-group">
+                    <label for="editFirstName">الاسم الأول</label>
+                    <input type="text" id="editFirstName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editLastName">اسم العائلة</label>
+                    <input type="text" id="editLastName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editUsername">اسم المستخدم (اليوزر)</label>
+                    <input type="text" id="editUsername" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editAge">العمر</label>
+                    <input type="number" id="editAge" min="6" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEmail">البريد الإلكتروني</label>
+                    <input type="email" id="editEmail" required>
+                </div>
+
+                <button type="submit" class="primary-btn" id="saveAccountBtn">
+                    حفظ التعديلات
+                </button>
+            </form>
+
+            <p id="editAccountStatus" class="page-message"></p>
+        </div>
+    </section>
+
+    <!-- 4. صفحة طلب توثيق الحساب -->
+    <section class="settings-page" id="verificationPage" style="z-index:60;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>طلب توثيق الحساب 🔵</h1>
+                <button class="back-button" id="backVerificationButton">← رجوع</button>
+            </header>
+
+            <div class="form-card">
+                <h2 style="margin-top:0;">التوثيق بالشارة الزرقاء</h2>
+                <p style="color:#b89ea8; line-height:1.8;">
+                    أدخل اسمك وبريدك الإلكتروني ورقم هاتفك لإرسال طلب التوثيق للإدارة. بعد مراجعة طلبك وتوثيق حسابك، ستتمكن من <strong>إرسال الرسائل الكتابية داخل غرف المجتمعات</strong>.
+                </p>
+
+                <p id="verificationStatusText" class="page-message" style="text-align:right; margin-top:10px;"></p>
+
+                <form id="verificationRequestForm" style="margin-top:15px;">
+                    <div class="form-group">
+                        <label for="verifyFullName">الاسم الكامل</label>
+                        <input type="text" id="verifyFullName" placeholder="أدخل اسمك الكامل" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verifyEmail">البريد الإلكتروني</label>
+                        <input type="email" id="verifyEmail" placeholder="example@gmail.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="verifyPhone">رقم الهاتف</label>
+                        <input type="tel" id="verifyPhone" placeholder="05xxxxxxxx" required>
+                    </div>
+
+                    <button type="submit" class="primary-btn" id="confirmVerifyBtn">
+                        إرسال طلب التوثيق
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. صفحة الانضمام عبر QR -->
+    <section class="settings-page" id="qrPage" style="z-index:60;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>الانضمام عبر باركود QR</h1>
+                <button class="back-button" id="backQrButton">← رجوع</button>
+            </header>
+
+            <div class="form-card">
+                <div id="qrReader"></div>
+
+                <button type="button" class="primary-btn" id="startCameraBtn">
+                    📷 تشغيل الكاميرا لمسح الباركود
+                </button>
+
+                <label for="qrImageInput" class="secondary-btn" style="display:block; text-align:center; box-sizing:border-box;">
+                    🖼️ رفع صورة باركود من الجهاز
+                </label>
+                <input type="file" id="qrImageInput" accept="image/*" style="display:none;">
+
+                <p id="qrStatusText" class="page-message"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. صفحة حذف الحساب -->
+    <section class="settings-page" id="deletePage" style="z-index:60;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>حذف الحساب</h1>
+                <button class="back-button" id="backDeleteButton">← رجوع</button>
+            </header>
+
+            <div class="form-card" style="border-color: rgba(239, 68, 68, 0.5);">
+                <h2 style="margin-top:0; color:#f87171;">تحذير نهائي</h2>
+                <p style="color:#b89ea8; line-height:1.8;">
+                    سيتم حذف ملفك الشخصي وبياناتك من قاعدة البيانات وحساب الدخول الخاص بك. لا يمكن التراجع عن هذا الإجراء.
+                </p>
+
+                <button type="button" class="danger-btn" id="confirmDeleteAccountBtn">
+                    تأكيد حذف الحساب نهائياً
+                </button>
+
+                <p id="deleteStatusText" class="page-message"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. صفحة إدارة التوثيق (تظهر فقط لبريد المدير) -->
+    <section class="settings-page" id="adminVerifyPage" style="z-index:65;">
+        <div class="settings-inner">
+            <header class="settings-top">
+                <h1>طلبات التوثيق الواردة 🛡️</h1>
+                <button class="back-button" id="backAdminVerifyButton">← رجوع</button>
+            </header>
+
+            <div id="adminRequestsList" class="community-list"></div>
+            <p id="adminVerifyStatus" class="page-message"></p>
+        </div>
+    </section>
+
+    <script type="module" src="my-communities.js"></script>
+    <script type="module" src="thanks.js"></script>
+
+</body>
+</html>

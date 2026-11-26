@@ -1,0 +1,93 @@
+
+import { auth, db } from "./firebase.js";
+
+import {
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+
+import {
+    doc,
+    getDoc,
+    updateDoc,
+    arrayUnion
+} from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+
+const inviteMessage = document.getElementById("inviteMessage");
+const joinButton = document.getElementById("joinButton");
+const statusMessage = document.getElementById("statusMessage");
+
+const inviteId = new URLSearchParams(
+    window.location.search
+).get("invite");
+
+let currentUser = null;
+let communityData = null;
+
+
+if (!inviteId) {
+    inviteMessage.textContent = "رابط الدعوة غير صالح.";
+} else {
+
+    const inviteRef = doc(db, "invites", inviteId);
+
+    const inviteSnapshot = await getDoc(inviteRef);
+
+    if (!inviteSnapshot.exists()) {
+        inviteMessage.textContent = "رابط الدعوة غير موجود.";
+    } else {
+        communityData = inviteSnapshot.data();
+
+        inviteMessage.textContent =
+            "تم العثور على الدعوة! يمكنك الانضمام إلى المجتمع.";
+
+        joinButton.disabled = false;
+    }
+}
+
+
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+});
+
+
+joinButton.addEventListener("click", async () => {
+
+    if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (!communityData) return;
+
+    try {
+
+        joinButton.disabled = true;
+
+        const communityRef = doc(
+            db,
+            "communities",
+            communityData.communityId
+        );
+
+        await updateDoc(communityRef, {
+            members: arrayUnion(currentUser.uid)
+        });
+
+        statusMessage.textContent =
+            "تم الانضمام إلى المجتمع بنجاح! 🎉";
+
+        setTimeout(() => {
+            window.location.href = "my-communities.html";
+        }, 1500);
+
+    } catch (error) {
+
+        console.error(error);
+
+        statusMessage.textContent =
+            "تعذر الانضمام إلى المجتمع.";
+
+        joinButton.disabled = false;
+    }
+});

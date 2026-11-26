@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم إنشاء المجتمع | FamilyStatus</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+    <main class="auth-page">
+        <section class="auth-card">
+
+            <div class="brand">
+                <div class="brand-icon">✦</div>
+                <span>FamilyStatus</span>
+            </div>
+
+            <h1>تم إنشاء مجتمعك بنجاح! 🎉</h1>
+
+            <p class="subtitle">
+                شارك رابط الدعوة مع أفراد عائلتك لينضموا إلى مجتمعك.
+            </p>
+
+            <div style="margin-top:25px;">
+                <label>رابط الدعوة الخاص بك</label>
+
+                <input
+                    id="inviteLink"
+                    readonly
+                    style="width:100%;padding:13px;margin-top:10px;border-radius:10px;box-sizing:border-box;"
+                >
+
+                <button id="copyInvite"
+                    style="width:100%;padding:14px;margin-top:15px;background:#9333ea;color:white;border:0;border-radius:10px;cursor:pointer;">
+                    نسخ رابط الدعوة 🔗
+                </button>
+
+                <p id="copyMessage"></p>
+            </div>
+
+            <a href="my-communities.html">
+                الذهاب إلى مجتمعاتي
+            </a>
+
+        </section>
+    </main>
+
+    <script type="module" src="invite-created.js"></script>
+<script type="module" src="thanks.js"></script>
+</body>
+</html>
